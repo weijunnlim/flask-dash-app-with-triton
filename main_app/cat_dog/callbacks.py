@@ -5,7 +5,7 @@ import uuid
 import os
 import base64
 
-UPLOAD_FOLDER = '/home/dxd_wj/model_serving/Flask-Dash-App-Factory-Template/main_app/uploads'
+UPLOAD_FOLDER = '/home/dxd_wj/model_serving/flask-dash-app/main_app/uploads'
 
 def register_callbacks(dash_app):
     @dash_app.callback(Output('output-image-upload', 'children'),
