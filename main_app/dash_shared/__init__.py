@@ -1,6 +1,6 @@
 import dash_html_components as html
 
-
+#nav bar
 def shared_dash_nav_links() -> html.Div:
     link_style = {'marginLeft': '10px'}
     links = html.Div(
@@ -36,6 +36,12 @@ def shared_dash_nav_links() -> html.Div:
             html.A(
                 href='/non_dash_app',
                 children='Non Dash Flask Endpoint',
+                style=link_style
+            ),
+            #writes the name on navbar
+            html.A(
+                href='/cat_dog',
+                children='Cat Dog Prediction',
                 style=link_style
             )
         ]
