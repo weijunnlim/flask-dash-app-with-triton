@@ -20,14 +20,13 @@ def app_1_template():
     return render_template('dash.html', dash_url='/app_1_raw_dash/')
 
 
-@server_bp.route('/app_2/')
-def app_2_template():
-    return render_template('dash.html', dash_url='/app_2_raw_dash/')
-
-
 @server_bp.route('/cat_dog/')
 def cat_dog_template():
     return render_template('cat_dog.html', dash_url='/cat_dog/')
+
+@server_bp.route('/text_converter/')
+def text_converter_template():
+    return render_template('cat_dog.html', dash_url='/text_converter/')
 
 
 

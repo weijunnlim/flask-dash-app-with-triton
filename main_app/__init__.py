@@ -23,18 +23,6 @@ def create_app(dash_debug, dash_auto_reload):
         dash_auto_reload=dash_auto_reload
     )
 
-    from main_app.app_2.layout import layout as app_2_layout
-    from main_app.app_2.callbacks import register_callbacks as app_2_callbacks
-    register_dash_app(
-        flask_server=server,
-        title='App 2',
-        base_pathname='app_2_raw_dash',
-        layout=app_2_layout,
-        register_callbacks_funcs=[app_2_callbacks],
-        dash_debug=dash_debug,
-        dash_auto_reload=dash_auto_reload
-    )
-
     from main_app.cat_dog.layout import layout as cat_dog_layout
     from main_app.cat_dog.callbacks import register_callbacks as cat_dog_callbacks
     register_dash_app(
@@ -43,6 +31,18 @@ def create_app(dash_debug, dash_auto_reload):
         base_pathname='cat_dog',
         layout=cat_dog_layout,
         register_callbacks_funcs=[cat_dog_callbacks],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload
+    )
+
+    from main_app.text_converter.layout import layout as text_converter_layout
+    from main_app.text_converter.callbacks import register_callbacks as text_converter_callbacks
+    register_dash_app(
+        flask_server=server,
+        title='Text Converter',
+        base_pathname='text_converter',
+        layout=text_converter_layout,
+        register_callbacks_funcs=[text_converter_callbacks],
         dash_debug=dash_debug,
         dash_auto_reload=dash_auto_reload
     )
