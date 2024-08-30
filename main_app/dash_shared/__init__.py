@@ -19,18 +19,8 @@ def shared_dash_nav_links() -> html.Div:
                 style=link_style
             ),
             html.A(
-                href='/app_2',
-                children='App 2 as Jinja iFrame',
-                style=link_style
-            ),
-            html.A(
                 href='/app_1_raw_dash',
                 children='App 1 Native Dash Layout',
-                style=link_style
-            ),
-            html.A(
-                href='/app_2_raw_dash',
-                children='App 2 Native Dash Layout',
                 style=link_style
             ),
             html.A(
@@ -42,6 +32,11 @@ def shared_dash_nav_links() -> html.Div:
             html.A(
                 href='/cat_dog',
                 children='Cat Dog Prediction',
+                style=link_style
+            ),
+            html.A(
+                href='/text_converter',
+                children= 'Text Converter',
                 style=link_style
             )
         ]

@@ -3,3 +3,5 @@ dash
 pandas
 torch
 torchvision
+opencv-python
+tritonclient[http]
