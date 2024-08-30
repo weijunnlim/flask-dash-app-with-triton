@@ -35,6 +35,18 @@ def create_app(dash_debug, dash_auto_reload):
         dash_auto_reload=dash_auto_reload
     )
 
+    from main_app.cat_dog.layout import layout as cat_dog_layout
+    from main_app.cat_dog.callbacks import register_callbacks as cat_dog_callbacks
+    register_dash_app(
+        flask_server=server,
+        title='Cat Dog Prediction',
+        base_pathname='cat_dog',
+        layout=cat_dog_layout,
+        register_callbacks_funcs=[cat_dog_callbacks],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload
+    )
+
     # register extensions here
     register_blueprints(server)
 
