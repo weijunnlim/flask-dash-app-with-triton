@@ -28,5 +28,9 @@ def cat_dog_template():
 def text_converter_template():
     return render_template('cat_dog.html', dash_url='/text_converter/')
 
+@server_bp.route('/stroke_predictor/')
+def stroke_predictor_template():
+    return render_template('cat_dog.html', dash_url='/stroke_predictor/')
+
 
 

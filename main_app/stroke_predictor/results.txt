@@ -1,0 +1,22 @@
+Best parameters: {'learning_rate': 0.13053500811235333, 'max_depth': 5, 'min_child_weight': 10, 'subsample': 0.7602779654743874, 'colsample_bytree': 0.986143496430771, 'gamma': 0.9467103951015349, 'reg_alpha': 0.7161341608282279, 'reg_lambda': 0.48340343904846117}
+Best score from optuna: 0.9530332681017613
+Val Accuracy: 0.949119373776908
+Val Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.95      1.00      0.97       486
+           1       0.33      0.04      0.07        25
+
+    accuracy                           0.95       511
+   macro avg       0.64      0.52      0.52       511
+weighted avg       0.92      0.95      0.93       511
+
+Val ROC-AUC Score: 0.8045267489711935
+Optimal Threshold: 0.035420958
+[[340 146]
+ [  5  20]]
+F1 Score: 0.2094240837696335
+Val Accuracy with opt threshold: 0.7045009784735812
+Val ROC-AUC Score with opt threshold: 0.7497942386831276
+Test Accuracy: 0.949119373776908
+Test ROC-AUC Score: 0.8021399176954732
