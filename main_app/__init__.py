@@ -47,6 +47,19 @@ def create_app(dash_debug, dash_auto_reload):
         dash_auto_reload=dash_auto_reload
     )
 
+    from main_app.stroke_predictor.layout import layout as stroke_predictor_layout
+    from main_app.stroke_predictor.callbacks import register_callbacks as stroke_predictor_callbacks
+    register_dash_app(
+        flask_server=server,
+        title='Stroke Predictor',
+        base_pathname='stroke_predictor',
+        layout=stroke_predictor_layout,
+        register_callbacks_funcs=[stroke_predictor_callbacks],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload
+    )
+
+
     # register extensions here
     register_blueprints(server)
 

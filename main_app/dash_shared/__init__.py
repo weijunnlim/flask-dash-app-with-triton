@@ -38,6 +38,11 @@ def shared_dash_nav_links() -> html.Div:
                 href='/text_converter',
                 children= 'Text Converter',
                 style=link_style
+            ),
+            html.A(
+                href='/stroke_predictor',
+                children= 'Stroke Predictor',
+                style=link_style
             )
         ]
     )
