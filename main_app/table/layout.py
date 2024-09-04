@@ -8,8 +8,8 @@ import plotly.express as px
 df = pd.read_csv('/home/dxd_wj/model_serving/flask-dash-app/main_app/stroke_predictor/healthcare-dataset-stroke-data.csv')
 
 summary_stats = df.describe().transpose()
-summary_stats = summary_stats.reset_index()  # Reset index to get column names as a column
-summary_stats.rename(columns={"index": "Feature"}, inplace=True)  # Rename the index column to "Feature"
+summary_stats = summary_stats.reset_index()
+summary_stats.rename(columns={"index": "Feature"}, inplace=True)
 
 #Visualizations for categorical variables
 gender_distribution = px.pie(df, names='gender', title='Gender Distribution')
@@ -18,7 +18,6 @@ residence_type_distribution = px.pie(df, names='Residence_type', title='Residenc
 smoking_status_distribution = px.pie(df, names='smoking_status', title='Smoking Status Distribution')
 stroke_distribution = px.pie(df, names='stroke', title='Stroke Distribution')
 
-# Layout
 layout = html.Div([
     shared_dash_nav_links(),
     html.H2("Dataset Preview"),
