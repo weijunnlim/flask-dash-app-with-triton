@@ -4,7 +4,7 @@ from main_app.dash_shared import shared_dash_nav_links
 
 layout = html.Div([
     shared_dash_nav_links(),
-    html.H1("Image Classification"),
+    html.H1("Image Classification for Cat/Dog only"),
     dcc.Upload(
         id='upload-image',
         children=html.Div([
@@ -23,5 +23,5 @@ layout = html.Div([
         },
         multiple=False
     ),
-    html.Div(id='output-image-upload'),
+    html.Div(id='output-image-upload', style={'textAlign': 'center', 'marginTop': '20px'}),
 ])

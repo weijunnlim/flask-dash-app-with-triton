@@ -1,18 +1,14 @@
+<!DOCTYPE html>
 <html>
-    <head>
-      <title>Flask-Dash App Factory</title>
-    </head>
-    <body>
-        <header>
-            <a href="/" class='nav-bar-text-link'>Home:</a>
-            <a href="/app_1" class='nav-bar-text-link'>Dash App 1 As Jinja Template iFrame</a>
-            <a href="/app_1_raw_dash" class='nav-bar-text-link'>Dash App 1 As Native Dash Layout</a>
-            <a href="/non_dash_app" class='nav-bar-text-link'>Non-Dash App</a>
-            <a href="/cat_dog" class="nav-bar-text-link">Cat Dog Prediction</a>
-            <a href="/text_converter" class="nav-bar-text-link">Text Converter</a>
-        </header>
-        {% block content %}{% endblock %}
-    </body>
-
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='app_style.css')}}">
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app_style.css') }}">
+    {% for css in css_files %}
+        <link rel="stylesheet" href="{{ css }}">
+    {% endfor %}
+</head>
+<body>
+    {{ navbar|safe }}
+    {% block content %}{% endblock %}
+</body>
 </html>

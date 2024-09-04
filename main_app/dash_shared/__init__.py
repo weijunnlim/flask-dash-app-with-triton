@@ -1,49 +1,35 @@
+import dash_bootstrap_components as dbc
 import dash_html_components as html
 
-#nav bar
-def shared_dash_nav_links() -> html.Div:
-    link_style = {'marginLeft': '10px'}
-    links = html.Div(
-        id='shared-navigation-links',
-        style={'display': 'flex', 'flexWrap': 'wrap', 'marginTop': '15px', 'marginBottom': '15px', 'backgroundColor': 'lightBlue'},
-        children=[
-            html.Div('These links are part of the dash layout, shared by both applications'),
-            html.A(
-                href='/',
-                children='Home',
-                style=link_style
+def shared_dash_nav_links() -> dbc.Navbar:
+    # Define link style
+    link_style = {'marginLeft': '10px', 'color': 'white'}
+    
+    # Create Navbar items
+    nav_items = [
+        dbc.NavItem(dbc.NavLink('Cat Dog Prediction', href='/cat_dog', style=link_style, external_link=True)),
+        dbc.NavItem(dbc.NavLink('Text Converter', href='/text_converter', style=link_style, external_link=True)),
+        dbc.NavItem(dbc.NavLink('Stroke Predictor', href='/stroke_predictor', style=link_style, external_link=True)),
+    ]
+
+    # Add brand/logo text
+    brand = dbc.NavbarBrand("Home", href="/home", style={"color": "white", "fontWeight": "bold"}, external_link=True)
+
+    # Create the Navbar
+    navbar = dbc.Navbar(
+        dbc.Container([
+            dbc.Row(
+                [
+                    dbc.Col(brand, width="auto"),  
+                    dbc.Col(dbc.Nav(nav_items, navbar=True), width="auto"),  
+                ],
+                align="center"
             ),
-            html.A(
-                href='/app_1',
-                children='App 1 As Jinja iFrame',
-                style=link_style
-            ),
-            html.A(
-                href='/app_1_raw_dash',
-                children='App 1 Native Dash Layout',
-                style=link_style
-            ),
-            html.A(
-                href='/non_dash_app',
-                children='Non Dash Flask Endpoint',
-                style=link_style
-            ),
-            #writes the name on navbar
-            html.A(
-                href='/cat_dog',
-                children='Cat Dog Prediction',
-                style=link_style
-            ),
-            html.A(
-                href='/text_converter',
-                children= 'Text Converter',
-                style=link_style
-            ),
-            html.A(
-                href='/stroke_predictor',
-                children= 'Stroke Predictor',
-                style=link_style
-            )
-        ]
+        ]),
+        color="dark",  
+        dark=True,  
+        sticky="top",  
+        className="mb-4",
     )
-    return links
+
+    return navbar

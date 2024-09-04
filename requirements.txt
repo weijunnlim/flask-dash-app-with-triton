@@ -10,3 +10,4 @@ xgboost
 matplotlib
 optuna
 dash-mantine-components
+dash-bootstrap-components
