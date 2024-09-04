@@ -25,4 +25,6 @@ def run_inference(inputs):
 def preprocess_inputs(inputs):
     # Convert the inputs dictionary to a DataFrame
     df = pd.DataFrame([inputs])
+    df['hypertension'] = df['hypertension'].astype('bool')
+    df['heart_disease'] = df['heart_disease'].astype('bool')
     return df
