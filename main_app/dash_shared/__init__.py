@@ -10,6 +10,7 @@ def shared_dash_nav_links() -> dbc.Navbar:
         dbc.NavItem(dbc.NavLink('Cat Dog Prediction', href='/cat_dog', style=link_style, external_link=True)),
         dbc.NavItem(dbc.NavLink('Text Converter', href='/text_converter', style=link_style, external_link=True)),
         dbc.NavItem(dbc.NavLink('Stroke Predictor', href='/stroke_predictor', style=link_style, external_link=True)),
+        dbc.NavItem(dbc.NavLink('Table', href='/table', style=link_style, external_link=True)),
     ]
 
     # Add brand/logo text
