@@ -39,10 +39,17 @@ def register_callbacks(dash_app):
 
         return html.Div([
             html.H5(f"Uploaded Image: {image_filename}"),
-            html.Img(src=image_contents),
+            html.Img(src=image_contents, style={
+                'maxWidth': '100%',
+                'height': '80vh',
+                'border': '1px solid #ccc',
+                'borderRadius': '10px',
+                'boxShadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
+            }),
             html.Hr(),
             html.H4(f"Prediction: {result}")
         ])
+
     def allowed_file(filename):
       ALLOWED_EXTENSIONS = {'png', 'jpeg', 'gif', 'jpg'}
       return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

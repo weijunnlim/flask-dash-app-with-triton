@@ -1,36 +1,30 @@
 from flask import Blueprint, render_template
+from main_app.dash_shared import shared_dash_nav_links
 
 server_bp = Blueprint('main', __name__)
 
 
-@server_bp.route('/')
-def index():
+@server_bp.route('/home/')
+def home_template():
+    navbar = shared_dash_nav_links()
     user = {'username': 'User'}
-    return render_template("index.html", title='Home Page', user=user)
-
-
-@server_bp.route('/non_dash_app')
-def non_dash_page():
-    user = {'username': 'Some Unrelated Non Dash App or Page'}
-    return render_template("index.html", title='Non Dash Page', user=user)
-
-
-@server_bp.route('/app_1/')
-def app_1_template():
-    return render_template('dash.html', dash_url='/app_1_raw_dash/')
+    return render_template('index.html', dash_url='/home/', user=user, navbar = navbar)
 
 
 @server_bp.route('/cat_dog/')
 def cat_dog_template():
-    return render_template('cat_dog.html', dash_url='/cat_dog/')
+    navbar = shared_dash_nav_links()
+    return render_template('dash.html', dash_url='/cat_dog/', navbar = navbar)
 
 @server_bp.route('/text_converter/')
 def text_converter_template():
-    return render_template('cat_dog.html', dash_url='/text_converter/')
+    navbar = shared_dash_nav_links()
+    return render_template('dash.html', dash_url='/text_converter/', navbar = navbar)
 
 @server_bp.route('/stroke_predictor/')
 def stroke_predictor_template():
-    return render_template('cat_dog.html', dash_url='/stroke_predictor/')
+    navbar = shared_dash_nav_links()
+    return render_template('dash.html', dash_url='/stroke_predictor/', navbar = navbar)
 
 
 

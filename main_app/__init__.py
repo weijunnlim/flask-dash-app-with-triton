@@ -2,6 +2,7 @@ from flask import Flask
 from flask.helpers import get_root_path
 from dash import Dash
 from os import getpid
+from dash_bootstrap_components.themes import BOOTSTRAP
 
 
 def create_app(dash_debug, dash_auto_reload):
@@ -10,17 +11,18 @@ def create_app(dash_debug, dash_auto_reload):
     # configure flask app/server here
     server.config.from_object('config.Config')
 
-    # register all dash apps
-    from main_app.app_1.layout import layout as app_1_layout
-    from main_app.app_1.callbacks import register_callbacks as app_1_callbacks
+    #register all dash apps
+    from main_app.home.layout import layout as home_layout
+    from main_app.home.callbacks import register_callbacks as home_callbacks
     register_dash_app(
         flask_server=server,
-        title='App 1',
-        base_pathname='app_1_raw_dash',
-        layout=app_1_layout,
-        register_callbacks_funcs=[app_1_callbacks],
+        title='Home Page',
+        base_pathname='home',
+        layout=home_layout,
+        register_callbacks_funcs=[home_callbacks],
         dash_debug=dash_debug,
-        dash_auto_reload=dash_auto_reload
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
     )
 
     from main_app.cat_dog.layout import layout as cat_dog_layout
@@ -32,7 +34,8 @@ def create_app(dash_debug, dash_auto_reload):
         layout=cat_dog_layout,
         register_callbacks_funcs=[cat_dog_callbacks],
         dash_debug=dash_debug,
-        dash_auto_reload=dash_auto_reload
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
     )
 
     from main_app.text_converter.layout import layout as text_converter_layout
@@ -44,7 +47,8 @@ def create_app(dash_debug, dash_auto_reload):
         layout=text_converter_layout,
         register_callbacks_funcs=[text_converter_callbacks],
         dash_debug=dash_debug,
-        dash_auto_reload=dash_auto_reload
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
     )
 
     from main_app.stroke_predictor.layout import layout as stroke_predictor_layout
@@ -56,7 +60,8 @@ def create_app(dash_debug, dash_auto_reload):
         layout=stroke_predictor_layout,
         register_callbacks_funcs=[stroke_predictor_callbacks],
         dash_debug=dash_debug,
-        dash_auto_reload=dash_auto_reload
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
     )
 
 
@@ -68,7 +73,7 @@ def create_app(dash_debug, dash_auto_reload):
     return server
 
 
-def register_dash_app(flask_server, title, base_pathname, layout, register_callbacks_funcs, dash_debug, dash_auto_reload):
+def register_dash_app(flask_server, title, base_pathname, layout, register_callbacks_funcs, dash_debug, dash_auto_reload, external_stylesheets= None):
     # Meta tags for viewport responsiveness
     meta_viewport = {"name": "viewport", "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
 
@@ -78,7 +83,7 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
         url_base_pathname=f'/{base_pathname}/',
         assets_folder=get_root_path(__name__) + '/static/',
         meta_tags=[meta_viewport],
-        # external_stylesheets=[],
+        external_stylesheets=external_stylesheets,
         # external_scripts=[]
     )
 
@@ -87,8 +92,9 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
         my_dash_app.layout = layout
         my_dash_app.css.config.serve_locally = True
         my_dash_app.enable_dev_tools(debug=dash_debug, dev_tools_hot_reload=dash_auto_reload)
-        for call_back_func in register_callbacks_funcs:
-            call_back_func(my_dash_app)
+        if register_callbacks_funcs:
+            for call_back_func in register_callbacks_funcs:
+                call_back_func(my_dash_app)
 
 
 def register_blueprints(server):
