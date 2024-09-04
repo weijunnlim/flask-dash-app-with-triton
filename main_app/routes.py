@@ -27,4 +27,10 @@ def stroke_predictor_template():
     return render_template('dash.html', dash_url='/stroke_predictor/', navbar = navbar)
 
 
+@server_bp.route('/table/')
+def table_template():
+    navbar = shared_dash_nav_links()
+    return render_template('dash.html', dash_url='/table/', navbar = navbar)
+
+
 

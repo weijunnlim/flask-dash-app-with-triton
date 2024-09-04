@@ -64,6 +64,19 @@ def create_app(dash_debug, dash_auto_reload):
         external_stylesheets=[BOOTSTRAP]
     )
 
+    from main_app.table.layout import layout as table_layout
+    from main_app.table.callbacks import register_callbacks as table_callbacks
+    register_dash_app(
+        flask_server=server,
+        title='Table',
+        base_pathname='table',
+        layout=table_layout,
+        register_callbacks_funcs=[table_callbacks],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
+    )
+
 
     # register extensions here
     register_blueprints(server)
