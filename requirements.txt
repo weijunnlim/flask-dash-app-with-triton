@@ -11,10 +11,6 @@ matplotlib
 optuna
 dash-mantine-components
 dash-bootstrap-components
-<<<<<<< HEAD
 dash-auth
 onnx
 onnxmltools
-=======
-dash-auth
->>>>>>> 0ea3aabbbac75480a07e35bb3df97c2a6bb598a9
