@@ -1,3 +1,5 @@
+### Install model.onnx for text detection and text recognition first.
+### To do so, follow nvidia's guide https://github.com/triton-inference-server/tutorials/blob/main/Conceptual_Guide/Part_1-model_deployment/README.md
 ### pip install -r requirements.txt (activate virtual env first if needed)
 ### run the nvidia triton inference server on port 8000 in another terminal (at where your model repo is at)
 ### docker run --gpus=all -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v $(pwd)/model_repository:/models nvcr.io/nvidia/tritonserver:24.07-py3
