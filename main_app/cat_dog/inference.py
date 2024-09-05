@@ -29,7 +29,7 @@ def process_image(image_path):
     prediction_output = client.infer(
         model_name="cat_dog", inputs=[image_input]
     )
-    # Process response from recognition model
+    #process output from model
     predicted_output = prediction_output.as_numpy("536")
 
     # Perform inference
