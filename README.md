@@ -1,9 +1,9 @@
-# pip install -r requirements.txt (activate virtual env first if needed)
-# run the nvidia triton inference server on port 8000 in another terminal (at where your model repo is at)
-# docker run --gpus=all -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v $(pwd)/model_repository:/models nvcr.io/nvidia/tritonserver:24.07-py3
-# tritonserver --model-repository=/models
-# run the flask dash app
-# python app.py
+### pip install -r requirements.txt (activate virtual env first if needed)
+### run the nvidia triton inference server on port 8000 in another terminal (at where your model repo is at)
+### docker run --gpus=all -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v $(pwd)/model_repository:/models nvcr.io/nvidia/tritonserver:24.07-py3
+### tritonserver --model-repository=/models
+### run the flask dash app
+### python app.py
 
 
 # Template Notes:
