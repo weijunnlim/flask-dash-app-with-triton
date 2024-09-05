@@ -1,39 +1,42 @@
-import torch
+import numpy as np
 from torchvision import transforms
 from PIL import Image
+import tritonclient.http as httpclient
 
 def process_image(image_path):
-    # Check if a GPU is available and use it if it is, otherwise fall back to CPU
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    client = httpclient.InferenceServerClient(url="localhost:8000")
 
-    # Define the path to your model
-    model_path = '/home/dxd_wj/model_serving/flask-dash-app/main_app/cat_dog/model.pth'
-
-    # Load the model and move it to the appropriate device
-    model = torch.load(model_path, map_location=device)
-    model.to(device)
-    model.eval()  # Set the model to evaluation mode
-
-    # Define image transformations
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    # Load and transform the image
     image = Image.open(image_path).convert('RGB')
     image = transform(image)
-    image = image.unsqueeze(0)  # Add batch dimension
+    image = image.unsqueeze(0)  #adding batch dimension
 
-    # Move the input image to the same device as the model
-    image = image.to(device)
+
+    #create input
+    image_input = httpclient.InferInput(
+        "input.1", image.shape, datatype="FP32"
+    )
+
+    image_input.set_data_from_numpy(image.numpy())
+
+    #Query the server
+    prediction_output = client.infer(
+        model_name="cat_dog", inputs=[image_input]
+    )
+    # Process response from recognition model
+    predicted_output = prediction_output.as_numpy("536")
 
     # Perform inference
-    with torch.no_grad():
-        output = model(image)
-        _, predicted = torch.max(output, 1) #to determine which class has higher score
-        prediction = predicted.item() # 0 or 1
+    # with torch.no_grad():
+    #     output = model(image)
+    predicted = np.argmax(predicted_output, 1) #to determine which class has higher score
+    prediction = predicted[0]
 
     class_labels = ['Cat', 'Dog']
     return class_labels[prediction]
