@@ -11,3 +11,4 @@ matplotlib
 optuna
 dash-mantine-components
 dash-bootstrap-components
+dash-auth

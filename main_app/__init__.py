@@ -3,6 +3,12 @@ from flask.helpers import get_root_path
 from dash import Dash
 from os import getpid
 from dash_bootstrap_components.themes import BOOTSTRAP
+import dash_auth
+
+
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'hello': 'world'
+}
 
 
 def create_app(dash_debug, dash_auto_reload):
@@ -98,6 +104,11 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
         meta_tags=[meta_viewport],
         external_stylesheets=external_stylesheets,
         # external_scripts=[]
+    )
+
+    auth = dash_auth.BasicAuth(
+        my_dash_app,
+        VALID_USERNAME_PASSWORD_PAIRS
     )
 
     with flask_server.app_context():
