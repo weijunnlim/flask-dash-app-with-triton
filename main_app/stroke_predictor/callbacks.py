@@ -1,6 +1,7 @@
 from dash.dependencies import Input, Output, State
 from .inference import run_inference
 from dash import html
+import numpy as np
 
 def register_callbacks(dash_app):
     @dash_app.callback(
@@ -36,11 +37,7 @@ def register_callbacks(dash_app):
             'smoking_status_never smoked': smoking_status == 'never smoked',
             'smoking_status_smokes': smoking_status == 'smokes'
         }
-            
-            # Call the inference function
-            result = run_inference(inputs)
-
-            # Interpretation of the result
+            result = run_inference(inputs) #call inference function
             if result == 1:
                 risk_status = "at risk"
             else:
