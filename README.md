@@ -2,8 +2,13 @@
 
 ## Installation Instructions
 
-1. **Install ONNX Models:**
+1. **Install Models:**
    - For text detection and text recognition models, follow NVIDIA's guide: [NVIDIA Triton Inference Server Tutorial](https://github.com/triton-inference-server/tutorials/blob/main/Conceptual_Guide/Part_1-model_deployment/README.md).
+   - For meta SAM2 models, cd to the checkpoints folder and run the download checkpoints script using
+
+     ```bash
+     ./download_ckpts.sh
+     ```   
 
 2. **Install Dependencies:**
    - Activate your virtual environment if needed.
