@@ -32,5 +32,10 @@ def table_template():
     navbar = shared_dash_nav_links()
     return render_template('dash.html', dash_url='/table/', navbar = navbar)
 
+@server_bp.route('/meta_sam2/')
+def meta_sam2_template():
+    navbar = shared_dash_nav_links()
+    return render_template('dash.html', dash_url='/meta_sam2/', navbar = navbar)
+
 
 

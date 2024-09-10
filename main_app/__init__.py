@@ -83,6 +83,20 @@ def create_app(dash_debug, dash_auto_reload):
         external_stylesheets=[BOOTSTRAP]
     )
 
+    from main_app.meta_sam2.layout import layout as meta_sam2_layout
+    from main_app.meta_sam2.callbacks1 import register_image_upload_callback as meta_sam2_callbacks1
+    from main_app.meta_sam2.callbacks2 import segmented_image_callback as meta_sam2_callbacks2
+    register_dash_app(
+        flask_server=server,
+        title='Meta SAM2',
+        base_pathname='meta_sam2',
+        layout=meta_sam2_layout,
+        register_callbacks_funcs=[meta_sam2_callbacks1, meta_sam2_callbacks2],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
+    )
+
 
     # register extensions here
     register_blueprints(server)

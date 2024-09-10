@@ -14,3 +14,4 @@ dash-bootstrap-components
 dash-auth
 onnx
 onnxmltools
+sam2

@@ -8,15 +8,15 @@ def process_image(image_path):
     client = httpclient.InferenceServerClient(url="localhost:8000")
 
     transform = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize((224, 224)), #my model is resnet model so it was trained on 224 x 224 images
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]), #pytorch way of normalising images
     ])
 
     image = Image.open(image_path).convert('RGB')
     image = transform(image)
-    image = image.unsqueeze(0)  #adding batch dimension
-
+    image = image.unsqueeze(0)  #adding batch dimension into shape (1, 3, 224 , 224) 3 rgb channels 
+    #so that can process multiple images even though this case is only 1
 
     #create input
     image_input = httpclient.InferInput(
