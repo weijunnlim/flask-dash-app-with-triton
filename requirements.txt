@@ -1,0 +1,17 @@
+Flask
+dash
+pandas
+torch
+torchvision
+opencv-python
+tritonclient[http]
+scikit-learn
+xgboost
+matplotlib
+optuna
+dash-mantine-components
+dash-bootstrap-components
+dash-auth
+onnx
+onnxmltools
+sam2

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app_style.css') }}">
+    {% for css in css_files %}
+        <link rel="stylesheet" href="{{ css }}">
+    {% endfor %}
+</head>
+<body>
+    {{ navbar|safe }}
+    {% block content %}{% endblock %}
+</body>
+</html>
