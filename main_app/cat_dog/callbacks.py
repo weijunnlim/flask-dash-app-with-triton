@@ -13,6 +13,8 @@ def register_callbacks(dash_app):
         [State('upload-image', 'filename')]
     )
     def update_output(image_contents, image_filename):
+      if image_contents is None:
+        return "No Image"
       if image_contents is not None and allowed_file(image_filename):
         # Decode the base64 encoded image contents
         try:

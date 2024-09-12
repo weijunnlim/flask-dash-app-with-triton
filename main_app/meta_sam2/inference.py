@@ -1,60 +1,66 @@
 import torch
 from sam2.build_sam import build_sam2
-from sam2.sam2_image_predictor import SAM2ImagePredictor
+from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 import numpy as np
 from PIL import Image
 import base64
 import io
-import dash_core_components as dcc
 import dash_html_components as html
-
+import matplotlib.pyplot as plt
+import cv2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_path = '/home/dxd_wj/model_serving/flask-dash-app/main_app/meta_sam2/checkpoints/sam2_hiera_large.pt'
 model_cfg = 'sam2_hiera_l.yaml'
-predictor = SAM2ImagePredictor(build_sam2(model_cfg, model_path, device=device))
+sam2 = build_sam2(model_cfg, model_path, device=device)
+mask_generator = SAM2AutomaticMaskGenerator(sam2)
 
+np.random.seed(3)
+
+def show_anns(anns, borders=True):
+    if len(anns) == 0:
+        return
+    sorted_anns = sorted(anns, key=(lambda x: x['area']), reverse=True)
+    ax = plt.gca()
+    ax.set_autoscale_on(False)
+
+    img = np.ones((sorted_anns[0]['segmentation'].shape[0], sorted_anns[0]['segmentation'].shape[1], 4))
+    img[:, :, 3] = 0
+    for ann in sorted_anns:
+        m = ann['segmentation']
+        color_mask = np.concatenate([np.random.random(3), [0.5]])
+        img[m] = color_mask 
+        if borders:
+            import cv2
+            contours, _ = cv2.findContours(m.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
+            contours = [cv2.approxPolyDP(contour, epsilon=0.01, closed=True) for contour in contours]
+            cv2.drawContours(img, contours, -1, (0, 0, 1, 0.4), thickness=1) 
+
+    ax.imshow(img)
 def perform_segmentation(uploaded_image):
-    #decode the image
+    # Decode the image
     content_type, content_string = uploaded_image.split(',')
     decoded_image = base64.b64decode(content_string)
     image = Image.open(io.BytesIO(decoded_image))
     image_np = np.array(image.convert("RGB"))
+    
+    masks = mask_generator.generate(image_np)
+    
+    #Plot the image and overlay the masks
+    plt.figure(figsize=(20, 20))
+    plt.imshow(image)
+    show_anns(masks)
+    plt.axis('off')
+    
+    #Save the plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    plt.close()
 
-    # Perform semantic segmentation
-    h, w, _ = image_np.shape
-    input_points = np.array([
-        [w // 2, h // 2],  # Center point
-        [w // 2 + 50, h // 2],  # Point to the right of the center
-        [w // 2 - 50, h // 2]   # Point to the left of the center
-    ])
-    input_labels = np.array([1, 1, 1]) 
+    #Convert plot image to base64
+    img_base64 = base64.b64encode(buf.getvalue()).decode('ascii')
+    buf.close()
 
-    with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
-        predictor.set_image(image_np)
-        masks, scores, logits = predictor.predict(
-            point_coords=input_points,
-            point_labels=input_labels,
-            multimask_output=True,
-        )
-        
-        #sorting between the scores to input best one
-        sorted_ind = np.argsort(scores)[::-1]
-        masks = masks[sorted_ind]
-        scores = scores[sorted_ind]
-        logits = logits[sorted_ind]
-
-    #Convert segmented image to base64 string for display
-    def image_to_base64(image):
-        buffered = io.BytesIO()
-        image.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue()).decode('ascii')
-        return f"data:image/png;base64,{img_str}"
-
-    #Convert first mask to PIL Image for display
-    segmented_image = Image.fromarray((masks[0] * 255).astype(np.uint8))
-    segmented_image_base64 = image_to_base64(segmented_image)
-
-    return html.Img(src=segmented_image_base64, style={'width': '100%'})
-
+    return html.Img(src=f"data:image/png;base64,{img_base64}", style={'width': '100%'})
 

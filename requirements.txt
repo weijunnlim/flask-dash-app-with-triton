@@ -15,3 +15,4 @@ dash-auth
 onnx
 onnxmltools
 sam2
+locust

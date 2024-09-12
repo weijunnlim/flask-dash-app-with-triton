@@ -25,18 +25,12 @@ def process_image(image_path):
 
     image_input.set_data_from_numpy(image.numpy())
 
-    #Query the server
-    prediction_output = client.infer(
-        model_name="cat_dog", inputs=[image_input]
-    )
-    #process output from model
-    predicted_output = prediction_output.as_numpy("536")
-
     # Perform inference
-    # with torch.no_grad():
-    #     output = model(image)
-    predicted = np.argmax(predicted_output, 1) #to determine which class has higher score
-    prediction = predicted[0]
-
-    class_labels = ['Cat', 'Dog']
-    return class_labels[prediction]
+    try:
+        prediction_output = client.infer(model_name="cat_dog", inputs=[image_input])
+        predicted_output = prediction_output.as_numpy("536")
+        predicted = np.argmax(predicted_output, 1)  # Get the class with highest score
+        class_labels = ['Cat', 'Dog']
+        return class_labels[predicted[0]]
+    except Exception as e:
+        return f"Error during inference: {str(e)}"
