@@ -36,16 +36,27 @@
      ```bash
      python app.py
      ```
+5. **(Optional) Prometheus and Grafana Monitoring Setup:**
+   - If you'd like to view the server's performance metrics using Prometheus and Grafana, follow the steps below:
 
-## Template Notes
+   **Prometheus Setup:**
+   - Refer to [Triton Inference Server Prometheus Metrics Setup](https://github.com/triton-inference-server/hugectr_backend/blob/main/docs/metrics.md).
+   - Once Prometheus is configured, start it by running:
 
-- **Application Entry Point:** `app.py`
-- **Layouts:** The app uses native Dash layouts. It does not utilize Jinja iFrames, but both methods are demonstrated.
-- **Additional Configurations:** Assign additional configurations to the Dash apps in the `register_dash_app` function.
+     ```bash
+     ./prometheus
+     ```
 
-## Helpful Tutorials & Repositories
+   **Grafana Setup:**
+   - Run Grafana using Docker:
 
-- [How to Embed a Dash App into an Existing Flask App](https://medium.com/@olegkomarov_77860/how-to-embed-a-dash-app-into-an-existing-flask-app-ea05d7a2210b)
-- [Plotly Dash with Flask](https://hackersandslackers.com/plotly-dash-with-flask/)
-- [Flask Blueprints](https://hackersandslackers.com/flask-blueprints/)
-- [Flask Template Auth with Dash](https://github.com/jimmybow/Flask_template_auth_with_Dash)
+     ```bash
+     docker run -d -p 3000:3000 grafana/grafana
+     ```
+
+   - Grafana will be available at `localhost:3000`.
+
+   - Default user and password would be admin
+
+## Summary
+By following the steps above, you will have the Triton Inference Server running to serve your models, along with a Flask-Dash application. Optionally, you can set up Prometheus and Grafana to monitor performance.
