@@ -1,14 +1,17 @@
-from flask import Flask
+from flask import Flask, request, url_for
 from flask.helpers import get_root_path
 from dash import Dash
 from os import getpid
 from dash_bootstrap_components.themes import BOOTSTRAP
 import dash_auth
+from flask_login import LoginManager, current_user
+from main_app.routes import server_bp
+from main_app.classes.user import User
+import flask
 
-
-VALID_USERNAME_PASSWORD_PAIRS = {
-    'hello': 'world'
-}
+# VALID_USERNAME_PASSWORD_PAIRS = {
+#     'hello': 'world'
+# }
 
 
 def create_app(dash_debug, dash_auto_reload):
@@ -16,6 +19,16 @@ def create_app(dash_debug, dash_auto_reload):
 
     # configure flask app/server here
     server.config.from_object('config.Config')
+
+    #Set up Flask-Login
+    login_manager = LoginManager()
+    login_manager.init_app(server)
+    login_manager.login_view = 'main.login'
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.get(user_id)
+    
 
     #register all dash apps
     from main_app.home.layout import layout as home_layout
@@ -120,10 +133,11 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
         # external_scripts=[]
     )
 
-    auth = dash_auth.BasicAuth(
-        my_dash_app,
-        VALID_USERNAME_PASSWORD_PAIRS
-    )
+    # auth = dash_auth.BasicAuth(
+    #     my_dash_app,
+    #     VALID_USERNAME_PASSWORD_PAIRS
+    # )
+
 
     with flask_server.app_context():
         my_dash_app.title = title
@@ -134,7 +148,21 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
             for call_back_func in register_callbacks_funcs:
                 call_back_func(my_dash_app)
 
+        @my_dash_app.server.before_request
+        def restrict_access():
+            public_routes = ['/meta_sam2/', '/table/', '/login']
+            current_path = request.path
 
+            #only public routes can access without logging in
+            if any(current_path.startswith(route) for route in public_routes):
+                return  
+
+            #all other routes denied
+            if not current_user.is_authenticated:
+                return flask.redirect(url_for('main.login'))
+
+
+            
 def register_blueprints(server):
     from main_app.routes import server_bp
     server.register_blueprint(server_bp)

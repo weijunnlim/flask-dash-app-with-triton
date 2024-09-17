@@ -1,11 +1,20 @@
-<!-- dash.html -->
-{% extends "base.html" %}
-
-{% block content %}
-    <div style="width: 100%; height: 100%;">
-        <iframe
-            style="width: 100%; height: 100%; border: none;"
-            src="{{ dash_url }}">
-        </iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dash App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            {% for item in navbar %}
+            <li><a href="{{ item.link }}">{{ item.label }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    <div id="dash-container">
+        <iframe src="{{ dash_url }}" style="width: 100%; height: 600px; border: none;"></iframe>
     </div>
-{% endblock %}
+</body>
+</html>

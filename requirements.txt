@@ -16,3 +16,5 @@ onnx
 onnxmltools
 sam2
 locust
+flask-login
+flask-wtf
