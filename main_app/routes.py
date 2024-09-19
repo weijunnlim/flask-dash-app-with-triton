@@ -1,30 +1,18 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from main_app.dash_shared import shared_dash_nav_links
 from flask_login import login_user, logout_user, login_required, current_user
-from main_app.forms.forms import LoginForm
-from main_app.classes.user import User
-import flask
+from main_app.classes.student import Student
+from main_app.extensions import db
 
 server_bp = Blueprint('main', __name__)
 
-@server_bp.route('/login', methods=['GET', 'POST'])
+@server_bp.route('/login/', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        #look up from user class
-        user_data = User.get_by_username(form.username.data)
-        
-        if user_data and user_data.password == form.password.data:
-            user = User(id=user_data.id, username=user_data.username, password=user_data.password)
-            login_user(user)
-            flask.flash('Logged in successfully.')
+    return render_template('login.html', dash_url='/login/')
 
-            next_url = request.args.get('next') or url_for('main.home_template')
-            return redirect(next_url)
-        else:
-            flask.flash('Invalid username or password', 'danger')
-
-    return render_template('login.html', form=form)
+@server_bp.route('/signup/', methods=('GET', 'POST'))
+def signup():
+    return render_template('signup.html', dash_url='/signup/')
 
 
 @server_bp.route('/logout')
@@ -67,5 +55,40 @@ def meta_sam2_template():
     navbar = shared_dash_nav_links()
     return render_template('dash.html', dash_url='/meta_sam2/', navbar = navbar)
 
+@server_bp.route('/')
+def index():
+    students = Student.query.all()
+    return render_template('student_index.html', students=students)
+
+
+@server_bp.route('/<int:student_id>/edit/', methods=('GET', 'POST'))
+def edit(student_id):
+    student = Student.query.get_or_404(student_id)
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        student.username = username
+        student.password = password
+
+        db.session.add(student)
+        db.session.commit()
+
+        return redirect(url_for('main.index'))
+
+    return render_template('student_edit.html', student=student)
+
+@server_bp.route('/student/<int:student_id>', methods=['GET'])
+def student_detail(student_id):
+    student = Student.query.get_or_404(student_id)
+    return render_template('student_detail.html', student=student)
+
+@server_bp.post('/<int:student_id>/delete/')
+def delete(student_id):
+    student = Student.query.get_or_404(student_id)
+    db.session.delete(student)
+    db.session.commit()
+    return redirect(url_for('main.index'))
 
 

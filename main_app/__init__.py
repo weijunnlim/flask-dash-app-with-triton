@@ -3,16 +3,16 @@ from flask.helpers import get_root_path
 from dash import Dash
 from os import getpid
 from dash_bootstrap_components.themes import BOOTSTRAP
-import dash_auth
+#import dash_auth
 from flask_login import LoginManager, current_user
 from main_app.routes import server_bp
-from main_app.classes.user import User
+from main_app.classes.student import Student
 import flask
+from main_app.extensions import db
 
 # VALID_USERNAME_PASSWORD_PAIRS = {
 #     'hello': 'world'
 # }
-
 
 def create_app(dash_debug, dash_auto_reload):
     server = Flask(__name__, static_folder='static')
@@ -27,7 +27,12 @@ def create_app(dash_debug, dash_auto_reload):
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.get(user_id)
+        return Student.query.get(user_id)
+    
+    server.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(server)
     
 
     #register all dash apps
@@ -111,6 +116,35 @@ def create_app(dash_debug, dash_auto_reload):
     )
 
 
+    from main_app.login.layout import layout as login_layout
+    from main_app.login.callbacks import register_callbacks as login_callbacks
+    from main_app.login.callbacks2 import register_callbacks2 as login_callbacks2
+    register_dash_app(
+        flask_server=server,
+        title='Login',
+        base_pathname='login',
+        layout=login_layout,
+        register_callbacks_funcs=[login_callbacks, login_callbacks2],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
+    )
+
+    from main_app.signup.layout import layout as signup_layout
+    from main_app.signup.callbacks import register_callbacks as signup_callbacks
+    register_dash_app(
+        flask_server=server,
+        title='Signup',
+        base_pathname='signup',
+        layout=signup_layout,
+        register_callbacks_funcs=[signup_callbacks],
+        dash_debug=dash_debug,
+        dash_auto_reload=dash_auto_reload,
+        external_stylesheets=[BOOTSTRAP]
+    )
+
+
+
     # register extensions here
     register_blueprints(server)
 
@@ -150,16 +184,18 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
 
         @my_dash_app.server.before_request
         def restrict_access():
-            public_routes = ['/meta_sam2/', '/table/', '/login']
+            public_routes = ['/meta_sam2/', '/table/', '/login/', '/signup/', '/']
             current_path = request.path
 
             #only public routes can access without logging in
             if any(current_path.startswith(route) for route in public_routes):
                 return  
 
-            #all other routes denied
-            if not current_user.is_authenticated:
-                return flask.redirect(url_for('main.login'))
+            #if login successful
+            if current_user.is_authenticated:
+                return
+    
+            return flask.redirect(url_for('main.login'))
 
 
             

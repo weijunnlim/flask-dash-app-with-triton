@@ -18,3 +18,4 @@ sam2
 locust
 flask-login
 flask-wtf
+flask-sqlalchemy

@@ -31,3 +31,4 @@ class User:
 
 User('1', 'hello', 'world') #id, username, pw
 User('24', 'weijun', 'weijun123')
+

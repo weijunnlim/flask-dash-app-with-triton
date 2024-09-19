@@ -1,21 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Students List</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            {% for item in navbar %}
-            <li><a href="{{ item.link }}">{{ item.label }}</a></li>
-            {% endfor %}
-        </ul>
-    </nav>
-    <h1>Welcome, {{ user.username }}</h1>
-    <div id="dash-container">
-        <iframe src="{{ dash_url }}" style="width: 100%; height: 600px; border: none;"></iframe>
-    </div>
+    <h1>List of Students</h1>
+    <ul>
+        {% for student in students %}
+            <li>{{ student.username }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

@@ -2,6 +2,9 @@
 # prevent circular imports.  Setting up cache in a separate cache.py file similar to this config.py file is very helpful.
 
 class Config:
+    #data base config
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     # user configurations
     flask_debug = False
     dash_debug = False
