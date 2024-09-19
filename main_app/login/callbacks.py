@@ -3,7 +3,7 @@ from flask_login import login_user
 import dash_bootstrap_components as dbc
 from main_app.classes.student import Student
 from dash.exceptions import PreventUpdate
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 def register_callbacks(dash_app):
     @dash_app.callback(

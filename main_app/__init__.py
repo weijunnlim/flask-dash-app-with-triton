@@ -33,7 +33,7 @@ def create_app(dash_debug, dash_auto_reload):
     server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(server)
-    
+
 
     #register all dash apps
     from main_app.home.layout import layout as home_layout
@@ -184,7 +184,7 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
 
         @my_dash_app.server.before_request
         def restrict_access():
-            public_routes = ['/meta_sam2/', '/table/', '/login/', '/signup/', '/']
+            public_routes = ['/meta_sam2/', '/table/', '/login/', '/signup/', '/database'] #never put '/' as it will allow all routes
             current_path = request.path
 
             #only public routes can access without logging in
