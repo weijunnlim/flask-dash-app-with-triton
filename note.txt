@@ -1,0 +1,5 @@
+Potential Improvements
+1. Adding confirmation to logout
+2. Allowing student(user) to change details/delete acc
+3. Changing student to user
+4. Improve UI of app overall
