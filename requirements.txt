@@ -19,3 +19,4 @@ locust
 flask-login
 flask-wtf
 flask-sqlalchemy
+explainerdashboard

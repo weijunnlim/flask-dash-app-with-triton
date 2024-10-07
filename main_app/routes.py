@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from main_app.dash_shared import shared_dash_nav_links
 from flask_login import logout_user, login_required, current_user
 from main_app.classes.student import Student
@@ -102,3 +102,14 @@ def clear_cookies():
     response = redirect(url_for('main.login'))
     response.set_cookie('session', '', expires=0)
     return response
+
+# attempt to try to do dashboard(model explainer)
+# @server_bp.route('/cat_dog/dashboard')
+# def return_dashboard():
+#     import pickle   
+#     from explainerdashboard import ExplainerDashboard
+#     #change the routing to as required
+#     with open('main_app/stroke_predictor/classifier_explainer.pkl', 'rb') as f: 
+#         explainer = pickle.load(f)
+#     db = ExplainerDashboard(explainer, server=server_bp, url_base_pathname="/cat_dog/dashboard/")
+#     return db.app.index()

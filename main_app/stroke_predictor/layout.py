@@ -1,13 +1,14 @@
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from main_app.dash_shared import shared_dash_nav_links
+import dash_core_components as dcc
 
 layout = dbc.Container([
     shared_dash_nav_links(),
     dbc.Row(
         dbc.Col(
             html.H1("Patient Health Data", className="text-center mb-4"),
-            width=12  # Full width for title
+            width=12  
         )
     ),
     dbc.Row(
@@ -147,6 +148,11 @@ layout = dbc.Container([
                             )
                         ], width=12, className="mb-3"),
 
+                        dbc.Col(
+                            html.A("About Model", href="/stroke_predictor/dashboard", className="btn btn-primary w-100 mt-3"),
+                            width=12, className="text-end"
+                        ),
+
                         dbc.Col([
                             dbc.Button('Submit Prediction', id='submit-button', n_clicks=0, className="btn btn-primary w-100 mt-3"),
                         ], width=12),
@@ -154,12 +160,12 @@ layout = dbc.Container([
                         dbc.Col([
                             html.Div(id='prediction-output', className="mt-3")
                         ], width=12),
-                    ], className="gx-4")  # Adjust spacing between columns
+                    ], className="gx-4") 
                 ]),
                 className="shadow-sm"
             ),
-            width=6  # Adjust the width of the form
+            width=6  
         ),
-        className="d-flex justify-content-center"  # Center the form
+        className="d-flex justify-content-center" 
     )
 ], fluid=True)
