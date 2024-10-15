@@ -60,89 +60,138 @@ def create_app(dash_debug, dash_auto_reload):
     dataset_clean_median = pd.read_csv('main_app/dataset_clean_median.csv')
     X = dataset_clean_median.drop(['stroke', 'id'], axis=1) #all features
 
-    shap_values = explainer_v2.shap_values(X)
     # shap.force_plot(explainer.expected_value, shap_values[0, :], X.iloc[0, :])
     # shap.save_html('force_plot.html', shap.force_plot(explainer.expected_value, shap_values[0, :], X.iloc[0, :]))
 
-    class CustomDashPage(ExplainerComponent):
+    class CustomDashPage(ExplainerComponent): #probably can wrap in any other component written in their documentation
+        def __init__(self, explainer, title="Custom Dashboard", name="None"):
+            super().__init__(explainer, title, name=name)
+            #can choose whatever component u want   
+            self.shap_dependence = ShapDependenceComponent(explainer, name=self.name+"dep",
+                                hide_title=True, hide_cats=True, hide_highlight=True,
+                                cats=True)
+            self.contrib = ShapContributionsGraphComponent(explainer, name=self.name+"contrib",
+                            hide_selector=True, hide_cats=True, 
+                            hide_depth=True, hide_sort=True,)
     
         def layout(self):
             return html.Div([
+                self.shap_dependence.layout(),
+                self.contrib.layout(),
                 html.Div(id='output-div', children="Enter input data:"),
 
-                dcc.Dropdown(
-                    id='gender',
-                    options=[
-                        {'label': 'Male', 'value': 'Male'},
-                        {'label': 'Female', 'value': 'Female'},
-                        {'label': 'Other', 'value': 'Other'}
-                    ],
-                    placeholder='Select Gender'
-                ),
+                html.Div([
+                    dbc.Label("Gender:", className="form-label"),
+                    dcc.Dropdown(
+                        id='gender',
+                        options=[
+                            {'label': 'Male', 'value': 'Male'},
+                            {'label': 'Female', 'value': 'Female'},
+                            {'label': 'Other', 'value': 'Other'}
+                        ],
+                        placeholder='Select Gender'
+                    )
+                ]),
                 
-                dcc.Input(id='age', type='number', placeholder='Enter Age'),
-                
-                dcc.Dropdown(
-                    id='hypertension',
-                    options=[
-                        {'label': 'No', 'value': 0},
-                        {'label': 'Yes', 'value': 1}
-                    ],
-                    placeholder='Select Hypertension (0/1)'
-                ),
-                
-                dcc.Dropdown(
-                    id='heart_disease',
-                    options=[
-                        {'label': 'No', 'value': 0},
-                        {'label': 'Yes', 'value': 1}
-                    ],
-                    placeholder='Select Heart Disease (0/1)'
-                ),
+        
+                html.Div([
+                    dbc.Label("Age:", className="form-label"),
+                    dcc.Input(
+                        id='age', type='number', placeholder='Enter Age'
+                    )
+                ]),
 
-                dcc.Dropdown(
-                    id='ever_married',
-                    options=[
-                        {'label': 'Yes', 'value': 'Yes'},
-                        {'label': 'No', 'value': 'No'}
-                    ],
-                    placeholder='Select Ever Married (Yes/No)'
-                ),
+                html.Div([
+                    dbc.Label("Hypertension:", className="form-label"),
+                    dcc.Dropdown(
+                        id='hypertension',
+                        options=[
+                            {'label': 'No', 'value': 0},
+                            {'label': 'Yes', 'value': 1}
+                        ],
+                        placeholder='Select Hypertension (0/1)'
+                    )
+                ]),
 
-                dcc.Dropdown(
-                    id='work_type',
-                    options=[
-                        {'label': 'Self-employed', 'value': 'Self-employed'},
-                        {'label': 'Private', 'value': 'Private'},
-                        {'label': 'Govt_job', 'value': 'Govt_job'},
-                        {'label': 'Never_worked', 'value': 'Never_worked'},
-                        {'label': 'Children', 'value': 'Children'}
-                    ],
-                    placeholder='Select Work Type'
-                ),
-                
-                dcc.Dropdown(
-                    id='Residence_type',
-                    options=[
-                        {'label': 'Urban', 'value': 'Urban'},
-                        {'label': 'Rural', 'value': 'Rural'}
-                    ],
-                    placeholder='Select Residence Type'
-                ),
+ 
+                html.Div([
+                    dbc.Label("Heart Disease:", className="form-label"),
+                    dcc.Dropdown(
+                        id='heart_disease',
+                        options=[
+                            {'label': 'No', 'value': 0},
+                            {'label': 'Yes', 'value': 1}
+                        ],
+                        placeholder='Select Heart Disease (0/1)'
+                    )
+                ]),
 
-                dcc.Input(id='avg_glucose_level', type='number', placeholder='Enter Avg Glucose Level'),
+                html.Div([
+                    dbc.Label("Ever Married:", className="form-label"),
+                    dcc.Dropdown(
+                        id='ever_married',
+                        options=[
+                            {'label': 'Yes', 'value': 'Yes'},
+                            {'label': 'No', 'value': 'No'}
+                        ],
+                        placeholder='Select Ever Married (Yes/No)'
+                    )
+                ]),
+
+                html.Div([
+                    dbc.Label("Work Type:", className="form-label"),
+                    dcc.Dropdown(
+                        id='work_type',
+                        options=[
+                            {'label': 'Self-employed', 'value': 'Self-employed'},
+                            {'label': 'Private', 'value': 'Private'},
+                            {'label': 'Govt_job', 'value': 'Govt_job'},
+                            {'label': 'Never_worked', 'value': 'Never_worked'},
+                            {'label': 'Children', 'value': 'Children'}
+                        ],
+                        placeholder='Select Work Type'
+                    )
+                ]),
+
+                html.Div([
+                    dbc.Label("Residence Type:", className="form-label"),
+                    dcc.Dropdown(
+                        id='Residence_type',
+                        options=[
+                            {'label': 'Urban', 'value': 'Urban'},
+                            {'label': 'Rural', 'value': 'Rural'}
+                        ],
+                        placeholder='Select Residence Type'
+                    )
+                ]),
+
+                html.Div([
+                    dbc.Label("Avg Glucose lvl:", className="form-label"),
+                    dcc.Input(
+                        id='avg_glucose_level', type='number', placeholder='Enter Avg Glucose Level'
+                    )
+                ]),
+
+                html.Div([
+                    dbc.Label("BMI:", className="form-label"),
+                    dcc.Input(
+                        id='bmi', type='number', placeholder='Enter BMI'
+                    )
+                ]),
+
+                html.Div([
+                    dbc.Label("Smoking status:", className="form-label"),
+                    dcc.Dropdown(
+                        id='smoking_status',
+                        options=[
+                            {'label': 'Formerly Smoked', 'value': 'formerly smoked'},
+                            {'label': 'Smokes', 'value': 'smokes'},
+                            {'label': 'Never Smoked', 'value': 'never smoked'}
+                        ],
+                        placeholder='Select Smoking Status'
+                    )
+                ]),
                 
-                dcc.Input(id='bmi', type='number', placeholder='Enter BMI'),
-                
-                dcc.Dropdown(
-                    id='smoking_status',
-                    options=[
-                        {'label': 'Formerly Smoked', 'value': 'formerly smoked'},
-                        {'label': 'Smokes', 'value': 'smokes'},
-                        {'label': 'Never Smoked', 'value': 'never smoked'}
-                    ],
-                    placeholder='Select Smoking Status'
-                ),
                 html.Div([
                     html.Button(id='input-button', children="Generate Force Plot"),
                     html.Iframe(id='shap-force-plot', style={"width": "100%", "height": "600px"})
@@ -202,7 +251,7 @@ def create_app(dash_debug, dash_auto_reload):
 
                     smoking_statuses = ['formerly smoked', 'smokes', 'never smoked']
                     for status in smoking_statuses:
-                        encoded_data[f'smoking_status_{status.replace(" ", "_")}'] = 1 if input_data['smoking_status'] == status else 0
+                        encoded_data[f'smoking_status_{status}'] = 1 if input_data['smoking_status'] == status else 0
 
                     encoded_data['age'] = input_data['age']
                     encoded_data['hypertension'] = input_data['hypertension']
