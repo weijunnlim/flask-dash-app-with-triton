@@ -3,7 +3,7 @@ from flask.helpers import get_root_path
 from dash import Dash
 from os import getpid
 from dash_bootstrap_components.themes import BOOTSTRAP
-#import dash_auth
+import dash_auth
 from flask_login import LoginManager, current_user
 from main_app.routes import server_bp
 from main_app.classes.student import Student
@@ -19,9 +19,9 @@ from explainerdashboard.custom import *
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output, State
 
-# VALID_USERNAME_PASSWORD_PAIRS = {
-#     'hello': 'world'
-# }
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'hello': 'world'
+}
 
 def load_html_file(filepath):
     with open(filepath, 'r') as f:
@@ -59,9 +59,7 @@ def create_app(dash_debug, dash_auto_reload):
     import pandas as pd
     dataset_clean_median = pd.read_csv('main_app/dataset_clean_median.csv')
     X = dataset_clean_median.drop(['stroke', 'id'], axis=1) #all features
-
-    # shap.force_plot(explainer.expected_value, shap_values[0, :], X.iloc[0, :])
-    # shap.save_html('force_plot.html', shap.force_plot(explainer.expected_value, shap_values[0, :], X.iloc[0, :]))
+    figure = go.Figure()
 
     class CustomDashPage(ExplainerComponent): #probably can wrap in any other component written in their documentation
         def __init__(self, explainer, title="Custom Dashboard", name="None"):
@@ -194,13 +192,14 @@ def create_app(dash_debug, dash_auto_reload):
                 
                 html.Div([
                     html.Button(id='input-button', children="Generate Force Plot"),
-                    html.Iframe(id='shap-force-plot', style={"width": "100%", "height": "600px"})
-                ])
+                    html.Iframe(id='shap-force-plot', srcDoc ="", style={"width": "100%", "height": "400px"}),
+                    dcc.Graph(id='waterfall-plot', figure=figure)
+                ]),
             ])
         
         def component_callbacks(self, app):
             @app.callback(
-                Output('shap-force-plot', 'srcDoc'), #need to return as srcDoc
+                [Output('shap-force-plot', 'srcDoc'), Output('waterfall-plot', 'figure')], #need to return as srcDoc
                 Input('input-button', 'n_clicks'),
                 [Input('gender', 'value'),
                 Input('age', 'value'),
@@ -217,7 +216,7 @@ def create_app(dash_debug, dash_auto_reload):
             def update_force_plot(n_clicks, gender, age, hypertension, heart_disease,
                                   ever_married, work_type, Residence_type, avg_glucose_level, bmi, smoking_status):
                 if n_clicks is None:
-                    return '' 
+                    return '', go.Figure()
                 
                 input_data = {
                     'gender': gender,
@@ -273,10 +272,26 @@ def create_app(dash_debug, dash_auto_reload):
                 shap_values_input = explainer_v2.shap_values(input_df_aligned)
 
                 force_plot = shap.force_plot(explainer_v2.expected_value, shap_values_input[0], input_df_aligned.iloc[0, :])
+
+                fig = go.Figure(go.Waterfall(
+                    name = "SHAP Values", 
+                    x = input_df_aligned.columns.tolist(),
+                    y = shap_values_input[0],
+                    hoverinfo = "x+y",
+                    base = explainer_v2.expected_value,
+                    showlegend = True
+                ))
+
+                fig.update_layout(
+                    title = "Waterfall",
+                    xaxis_title = "Features",
+                    yaxis_title = "SHAP value",
+                    height = 400
+                )
                 
                 shap_html = f"<html><head>{shap.getjs()}</head><body>{force_plot.html()}</body></html>"
 
-                return shap_html
+                return shap_html, fig
             
 
             
@@ -291,7 +306,7 @@ def create_app(dash_debug, dash_auto_reload):
                                    #basically add whatever tabs u want
                                    [ImportancesComposite, ClassifierModelStatsComposite, 
                                     IndividualPredictionsComposite, WhatIfComposite, 
-                                    ShapDependenceComposite, DecisionTreesComposite,
+                                    ShapDependenceComposite, DecisionTreesComposite,    
                                     ShapInteractionsComposite, CustomDashPage],
                                    server=server, url_base_pathname="/stroke_predictor/dashboard/",
                                    title = 'Stroke Model Explainer',
@@ -306,10 +321,6 @@ def create_app(dash_debug, dash_auto_reload):
         shared_dash_nav_links(),
         dbc.Container([
             dashboard.app.layout,
-        #     html.Iframe(
-        #         srcDoc =html_content,
-        #         style={"width": "100%", "height": "600px", "border": "none"}
-        # )
         ]),
     ], fluid = True)
 
@@ -456,10 +467,10 @@ def register_dash_app(flask_server, title, base_pathname, layout, register_callb
         # external_scripts=[]
     )
 
-    # auth = dash_auth.BasicAuth(
-    #     my_dash_app,
-    #     VALID_USERNAME_PASSWORD_PAIRS
-    # )
+    auth = dash_auth.BasicAuth(
+        my_dash_app,
+        VALID_USERNAME_PASSWORD_PAIRS
+    )
 
 
     with flask_server.app_context():
